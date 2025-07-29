@@ -146,7 +146,11 @@ class NunchakuFluxPuLIDApplyV2:
             single_image = image[i : i + 1].squeeze().cpu().numpy() * 255.0
             single_image = np.clip(single_image, 0, 255).astype(np.uint8)
 
-            id_embedding, _ = pulid_pipline.get_id_embedding(single_image)
+            try:
+                id_embedding, _ = pulid_pipline.get_id_embedding(single_image)
+            except Exception as e:
+                logger.error(f"Failed to get ID embedding for image {i}: {e}")
+                id_embedding = None
             if id_embedding is not None:
                 all_embeddings.append(id_embedding)
 
